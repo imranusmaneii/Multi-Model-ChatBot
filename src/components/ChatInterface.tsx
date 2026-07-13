@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChatMessage, SourceChunk } from "@/types";
 import { generateId, formatTimestamp } from "@/lib/utils";
+import BotAvatar from "./BotAvatar";
+import MessageContent from "./MessageContent";
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -175,6 +177,11 @@ export default function ChatInterface() {
               transition={{ duration: 0.3 }}
               className={`mb-4 flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
             >
+              {message.role === "assistant" && (
+                <div className="mr-2 mt-1">
+                  <BotAvatar size={30} />
+                </div>
+              )}
               <div
                 className={`max-w-[80%] rounded-2xl px-5 py-3 ${
                   message.role === "user"
@@ -182,7 +189,11 @@ export default function ChatInterface() {
                     : "bg-dark-600 text-white/90"
                 }`}
               >
-                <div className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</div>
+                {message.role === "assistant" ? (
+                  <MessageContent content={message.content} />
+                ) : (
+                  <div className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</div>
+                )}
                 {message.sources && message.sources.length > 0 && (
                   <button
                     onClick={() =>
@@ -210,6 +221,9 @@ export default function ChatInterface() {
             animate={{ opacity: 1 }}
             className="flex justify-start"
           >
+            <div className="mr-2 mt-1">
+              <BotAvatar size={30} animate />
+            </div>
             <div className="rounded-2xl bg-dark-600 px-5 py-3">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-purple-accent animate-bounce" style={{ animationDelay: "0ms" }} />

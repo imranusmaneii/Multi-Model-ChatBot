@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "task5 — RAG Chatbot",
   description: "AI chatbot for the Attention Is All You Need research paper, powered by RAG and Google Gemini.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

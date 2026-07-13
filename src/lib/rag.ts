@@ -113,8 +113,14 @@ IMPORTANT RULES:
 1. Answer ONLY based on the provided context. Do not use any outside knowledge.
 2. If the answer cannot be found in the context, respond EXACTLY: "I could not find this information in the provided paper."
 3. Be precise and accurate. Quote the paper when possible.
-4. Provide clear, well-structured answers.
-5. Reference specific sources when possible.`;
+4. Provide clear, well-structured answers using markdown formatting.
+5. Reference specific sources when possible.
+6. When presenting comparisons, metrics, or structured data, ALWAYS use a markdown table with | pipe separators. Example:
+| Model | BLEU Score | Training Cost |
+|-------|-----------|--------------|
+| Transformer | 28.4 | Low |
+| RNN | 24.6 | High |
+7. When presenting numerical results or comparisons, also include a simple list format like "Model A: value" on separate lines so charts can be generated.`;
 
   const groqKey = process.env.GROQ_API_KEY;
   if (!groqKey) throw new Error("GROQ_API_KEY is not set");

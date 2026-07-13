@@ -1,0 +1,62 @@
+"use client";
+
+import { motion } from "framer-motion";
+
+interface BotAvatarProps {
+  size?: number;
+  className?: string;
+  animate?: boolean;
+}
+
+function BotSvg({ size }: { size: number }) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      width={size * 0.65}
+      height={size * 0.65}
+    >
+      <rect x="14" y="16" width="36" height="30" rx="10" fill="white" fillOpacity="0.95" />
+      <circle cx="25" cy="30" r="3.5" fill="#7c3aed" />
+      <circle cx="39" cy="30" r="3.5" fill="#7c3aed" />
+      <circle cx="26" cy="29" r="1.2" fill="white" />
+      <circle cx="40" cy="29" r="1.2" fill="white" />
+      <path
+        d="M26 37 C28 40, 36 40, 38 37"
+        stroke="#7c3aed"
+        strokeWidth="2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <line x1="32" y1="16" x2="32" y2="9" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="32" cy="7" r="3" fill="white" fillOpacity="0.9" />
+      <rect x="8" y="24" width="6" height="10" rx="3" fill="white" fillOpacity="0.7" />
+      <rect x="50" y="24" width="6" height="10" rx="3" fill="white" fillOpacity="0.7" />
+    </svg>
+  );
+}
+
+export default function BotAvatar({ size = 32, className = "", animate = false }: BotAvatarProps) {
+  const containerClass = `inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-accent to-purple-light shadow-lg shadow-purple-accent/20 ${className}`;
+  const containerStyle = { width: size, height: size };
+
+  if (animate) {
+    return (
+      <motion.div
+        className={containerClass}
+        style={containerStyle}
+        animate={{ y: [0, -2, 0] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <BotSvg size={size} />
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className={containerClass} style={containerStyle}>
+      <BotSvg size={size} />
+    </div>
+  );
+}
