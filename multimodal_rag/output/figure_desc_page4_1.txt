@@ -1,0 +1,42 @@
+The figure provided appears to be a Self-Attention mechanism, a key component of the Transformer architecture introduced in the paper "Attention Is All You Need" by Vaswani et al. in 2017. Here's a detailed description of the figure:
+
+**Architecture Overview**
+
+The figure depicts a single Self-Attention block, which is a crucial component of the Transformer model. The Self-Attention mechanism allows the model to attend to different parts of the input sequence simultaneously and weigh their importance.
+
+**Components and Labels**
+
+The figure consists of the following components, listed in order from bottom to top:
+
+1. **MatMul (Query, Key)**: This is the first matrix multiplication operation, which takes two inputs:
+	* **Q (Query)**: The query vector, represented by the label "Q" at the bottom of the figure.
+	* **K (Key)**: The key vector, represented by the label "K" at the bottom of the figure.
+	The output of this MatMul operation is a weighted representation of the query and key vectors.
+2. **Scale**: The output of the MatMul operation is then scaled, likely by a factor of $\frac{1}{\sqrt{d_k}}$, where $d_k$ is the dimensionality of the key vector.
+3. **Mask (opt.)**: An optional masking operation is applied to the scaled output. This masking is used to prevent the model from attending to future tokens in the input sequence (for encoder-decoder attention) or to itself (for decoder self-attention).
+4. **SoftMax**: The output of the masking operation (or the scaled output if masking is not used) is passed through a softmax function, which normalizes the weights to ensure they sum to 1.
+5. **MatMul (Weighted Value)**: The final matrix multiplication operation takes the output of the softmax function and the **V (Value)** vector, represented by the label "V" at the bottom of the figure. This produces the weighted sum of the value vector.
+
+**Axes and Data Points**
+
+The figure does not display explicit axes or data points. However, the arrows between the components indicate the flow of data through the Self-Attention mechanism.
+
+**Key Insights**
+
+The Self-Attention mechanism allows the model to:
+
+* Attend to different parts of the input sequence simultaneously
+* Weigh the importance of each part of the input sequence
+* Compute a weighted sum of the value vector based on the attention weights
+
+The Transformer architecture, which relies heavily on Self-Attention mechanisms, has been widely adopted for various natural language processing tasks, including machine translation, text classification, and text generation.
+
+**Technical Details**
+
+The Self-Attention mechanism can be mathematically represented as:
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+$$
+
+where $Q$, $K$, and $V$ are the query, key, and value vectors, respectively, and $d_k$ is the dimensionality of the key vector. The optional masking operation is used to modify the attention weights to prevent attending to future tokens or to itself.

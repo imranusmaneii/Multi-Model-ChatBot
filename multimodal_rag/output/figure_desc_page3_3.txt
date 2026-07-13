@@ -1,0 +1,39 @@
+The figure provided is a diagram of the Transformer model architecture, which is a type of neural network introduced in the paper "Attention Is All You Need" by Vaswani et al. in 2017.
+
+**Architecture Overview**
+
+The Transformer model consists of two main components: the Encoder and the Decoder.
+
+### Encoder
+
+*   The Encoder is composed of a stack of $N=6$ identical layers.
+*   Each layer has two sub-layers:
+    *   A multi-head self-attention mechanism
+    *   A simple, position-wise fully connected feed-forward network
+*   The output of each sub-layer is passed through layer normalization and residual connections.
+
+### Decoder
+
+*   The Decoder is also composed of a stack of $N=6$ identical layers.
+*   In addition to the two sub-layers in each encoder layer, the decoder inserts a third sub-layer:
+    *   A masked multi-head attention over the output of the encoder stack
+*   Similar to the encoder, residual connections are employed around each of the sub-layers, followed by layer normalization.
+
+**Key Components**
+
+*   **Multi-Head Attention**: allows the model to attend to different parts of the input sequence simultaneously and weigh their importance.
+*   **Positional Encoding**: adds positional information to the input embeddings to preserve the order of the sequence.
+*   **Feed Forward Network (FFN)**: a fully connected feed-forward network that transforms the output of the multi-head attention mechanism.
+
+**Technical Details**
+
+*   The output of each sub-layer is of dimension $d_{model} = 512$.
+*   The Transformer model uses self-attention mechanisms to weigh the importance of different parts of the input sequence.
+*   The model uses residual connections and layer normalization to stabilize the training process.
+
+**Key Insights**
+
+*   The Transformer model replaces traditional recurrent neural network (RNN) and convolutional neural network (CNN) architectures with self-attention mechanisms.
+*   The model achieves state-of-the-art results on several machine translation benchmarks.
+
+Overall, the Transformer model architecture is a significant departure from traditional RNN and CNN architectures, and its use of self-attention mechanisms has led to significant advances in natural language processing tasks.

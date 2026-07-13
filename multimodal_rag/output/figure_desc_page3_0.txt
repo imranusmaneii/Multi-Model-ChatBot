@@ -1,0 +1,34 @@
+The figure provided is a detailed architectural diagram of the Transformer model, as described in the paper "Attention Is All You Need" by Vaswani et al. (2017). This model is primarily designed for sequence-to-sequence tasks, such as machine translation.
+
+**Architecture Overview:**
+
+The Transformer architecture consists of an encoder and a decoder. The encoder takes a sequence of tokens (e.g., words or characters) as input and outputs a sequence of vectors. The decoder then generates the output sequence, one token at a time, based on the output vectors from the encoder.
+
+**Encoder:**
+
+- **Input Embedding:** The input sequence is first embedded into a vector space.
+- **Positional Encoding:** The embedded input sequence is then added with positional encodings to preserve the order of the sequence.
+- **Nx Encoder Layers:** The encoder consists of a stack of N identical layers. Each layer comprises two sub-layers:
+  1. **Multi-Head Attention:** This sub-layer applies self-attention to the input sequence, allowing the model to attend to all positions in the input sequence simultaneously and weigh their importance.
+  2. **Feed Forward:** A fully connected feed-forward network (FFN) is applied to each position separately and identically. This consists of two linear transformations with a ReLU activation in between.
+- **Add & Norm:** After each sub-layer, the output is added to the input of the sub-layer, and then normalized.
+
+**Decoder:**
+
+- **Output Embedding:** Similar to the input embedding, the output sequence (shifted right) is embedded into a vector space.
+- **Positional Encoding:** The embedded output sequence is added with positional encodings.
+- **Nx Decoder Layers:** The decoder also consists of a stack of N identical layers. Each layer has three sub-layers:
+  1. **Masked Multi-Head Attention:** This sub-layer applies self-attention to the output sequence but with a mask to prevent attending to future tokens.
+  2. **Multi-Head Attention:** This sub-layer applies attention to the output of the encoder.
+  3. **Feed Forward:** Similar to the encoder, a fully connected FFN is applied.
+- **Add & Norm:** Similar to the encoder, after each sub-layer, the output is added to the input of the sub-layer, and then normalized.
+
+**Output:**
+
+- The output of the decoder is passed through a linear layer followed by a softmax layer to produce output probabilities.
+
+**Key Insights:**
+
+- The Transformer model replaces traditional recurrent neural network (RNN) or convolutional neural network (CNN) layers with self-attention mechanisms, allowing for parallelization across sequence elements and reducing sequential computation.
+- The use of multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions.
+- The Transformer model achieves state-of-the-art results in machine translation tasks and has been widely adopted in natural language processing (NLP) and other sequence-to-sequence tasks.
