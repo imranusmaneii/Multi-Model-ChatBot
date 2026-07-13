@@ -19,7 +19,7 @@ export default function ChatInterface() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [messages]);
 
   const handleIngest = async () => {
@@ -257,7 +257,7 @@ export default function ChatInterface() {
             placeholder={isIngested ? "Ask about the paper..." : "Load the paper first..."}
             disabled={!isIngested || isLoading}
             rows={1}
-            className="flex-1 resize-none rounded-xl border border-white/10 bg-dark-700 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition-all focus:border-purple-accent/50 disabled:opacity-50"
+            className="max-h-24 flex-1 resize-none overflow-y-auto rounded-xl border border-white/10 bg-dark-700 px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition-all focus:border-purple-accent/50 disabled:opacity-50"
           />
           <button
             type="submit"
@@ -265,7 +265,7 @@ export default function ChatInterface() {
             className="rounded-xl bg-purple-accent px-5 py-3 text-sm font-medium text-white transition-all hover:bg-purple-light disabled:opacity-30"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-6-6l6 6-6 6" />
             </svg>
           </button>
         </form>
