@@ -56,11 +56,15 @@ export default function ChatInterface() {
     setError(null);
 
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 90000);
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMessage.content }),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
 
       const data = await res.json();
 
@@ -76,8 +80,12 @@ export default function ChatInterface() {
       } else {
         setError(data.error || "Failed to get response");
       }
-    } catch {
-      setError("Failed to connect to server. Please try again.");
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("Request timed out. Please try a shorter question.");
+      } else {
+        setError("Failed to connect to server. Please try again.");
+      }
     }
 
     setIsLoading(false);
@@ -265,7 +273,7 @@ export default function ChatInterface() {
             className="rounded-xl bg-purple-accent px-5 py-3 text-sm font-medium text-white transition-all hover:bg-purple-light disabled:opacity-30"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-6-6l6 6-6 6" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 12h16.5m-16.5 0l4.5-4.5m-4.5 4.5l4.5 4.5" />
             </svg>
           </button>
         </form>

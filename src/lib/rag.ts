@@ -121,7 +121,10 @@ IMPORTANT RULES:
 | Transformer | 28.4 | Low |
 | RNN | 24.6 | High |
 Do NOT use tabs to separate columns - always use the | pipe format above.
-7. When presenting numerical results or comparisons, also include a simple list format like "Model A: value" on separate lines so charts can be generated.`;
+7. When asked about architecture, diagrams, or how components connect, ALWAYS include a visual flow diagram using this exact format on its own lines:
+[Input] -> [Encoder] -> [Decoder] -> [Output]
+Use -> arrows between [bracketed components] to show the flow. Put each flow step on its own line. You can show parallel paths on separate lines.
+8. When presenting numerical results or comparisons, also include a simple list format like "Model A: value" on separate lines so charts can be generated.`;
 
   const groqKey = process.env.GROQ_API_KEY;
   if (!groqKey) throw new Error("GROQ_API_KEY is not set");
