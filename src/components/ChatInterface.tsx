@@ -20,7 +20,7 @@ export default function ChatInterface() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const handleIngest = async () => {
     setIsIngesting(true);
@@ -56,36 +56,77 @@ export default function ChatInterface() {
     setError(null);
 
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 90000);
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMessage.content }),
-        signal: controller.signal,
       });
-      clearTimeout(timeout);
 
-      const data = await res.json();
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        setError(errData?.error || `Server error (${res.status})`);
+        setIsLoading(false);
+        return;
+      }
 
-      if (data.success) {
-        const assistantMessage: ChatMessage = {
-          id: generateId(),
-          role: "assistant",
-          content: data.answer,
-          sources: data.sources,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
-      } else {
-        setError(data.error || "Failed to get response");
+      const reader = res.body?.getReader();
+      if (!reader) {
+        setError("No stream available");
+        setIsLoading(false);
+        return;
       }
-    } catch (err) {
-      if (err instanceof DOMException && err.name === "AbortError") {
-        setError("Request timed out. Please try a shorter question.");
-      } else {
-        setError("Failed to connect to server. Please try again.");
+
+      const assistantId = generateId();
+      let content = "";
+      let sources: SourceChunk[] | undefined;
+      const decoder = new TextDecoder();
+
+      setMessages((prev) => [
+        ...prev,
+        { id: assistantId, role: "assistant", content: "", timestamp: new Date() },
+      ]);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n");
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith("data: ")) continue;
+
+          try {
+            const data = JSON.parse(trimmed.slice(6));
+            if (data.error) {
+              setError(data.error);
+              setMessages((prev) => prev.filter((m) => m.id !== assistantId));
+              break;
+            }
+            if (data.token) {
+              content += data.token;
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantId ? { ...m, content } : m
+                )
+              );
+            }
+            if (data.done) {
+              sources = data.sources;
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantId ? { ...m, content, sources } : m
+                )
+              );
+            }
+          } catch {
+            // skip malformed lines
+          }
+        }
       }
+    } catch {
+      setError("Failed to connect to server. Please try again.");
     }
 
     setIsLoading(false);

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { queryPDF, isVectorStoreReady, ingestPDF } from "@/lib/rag";
+import { NextRequest } from "next/server";
+import { queryPDFStream, isVectorStoreReady, ingestPDF } from "@/lib/rag";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -10,9 +10,9 @@ export async function POST(request: NextRequest) {
     const { question } = body;
 
     if (!question || typeof question !== "string") {
-      return NextResponse.json(
-        { success: false, error: "Question is required" },
-        { status: 400 }
+      return new Response(
+        JSON.stringify({ success: false, error: "Question is required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
@@ -20,19 +20,43 @@ export async function POST(request: NextRequest) {
       await ingestPDF();
     }
 
-    const result = await queryPDF(question);
+    const encoder = new TextEncoder();
+    let fullAnswer = "";
 
-    return NextResponse.json({
-      success: true,
-      answer: result.answer,
-      sources: result.sources,
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          const { sources } = await queryPDFStream(question, (token) => {
+            fullAnswer += token;
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token })}\n\n`));
+          });
+
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ done: true, sources })}\n\n`)
+          );
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ error: msg })}\n\n`)
+          );
+        }
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error("Chat error:", message);
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ success: false, error: message }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 }
