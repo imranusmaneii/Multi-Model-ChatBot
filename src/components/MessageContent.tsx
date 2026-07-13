@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import TransformerDiagram from "./TransformerDiagram";
 
 function isPipeTable(line: string): boolean {
   return line.startsWith("|") && line.includes("|", 1);
@@ -8,10 +9,6 @@ function isPipeTable(line: string): boolean {
 
 function isSeparatorLine(line: string): boolean {
   return /^\|[\s\-:|]+\|$/.test(line) || (/^[\s\-:|\t]+$/.test(line.replace(/\|/g, "").trim()) && line.includes("-"));
-}
-
-function isDiagramLine(line: string): boolean {
-  return /\[.+?\]\s*->\s*\[.+?\]/.test(line) || /\[.+?\]\s*→\s*\[.+?\]/.test(line);
 }
 
 function isTabSeparatedTable(lines: string[], idx: number): boolean {
@@ -35,6 +32,13 @@ function parseContent(content: string): React.ReactNode[] {
 
     // Skip empty lines
     if (trimmed === "") {
+      i++;
+      continue;
+    }
+
+    // Diagram marker [DIAGRAM:transformer]
+    if (/^\[DIAGRAM:\w+\]$/.test(trimmed)) {
+      elements.push(<TransformerDiagram key={key++} />);
       i++;
       continue;
     }
@@ -87,17 +91,6 @@ function parseContent(content: string): React.ReactNode[] {
       const text = headingMatch[2];
       elements.push(renderHeading(text, level, key++));
       i++;
-      continue;
-    }
-
-    // Diagram lines - [Component] -> [Component]
-    if (isDiagramLine(trimmed)) {
-      const diagramLines: string[] = [];
-      while (i < lines.length && (isDiagramLine(lines[i].trim()) || lines[i].trim() === "")) {
-        if (lines[i].trim() !== "") diagramLines.push(lines[i].trim());
-        i++;
-      }
-      elements.push(renderDiagram(diagramLines, key++));
       continue;
     }
 
@@ -308,43 +301,6 @@ function renderChart(data: { label: string; value: number }[], key: number) {
                 {d.value.toLocaleString()}
               </span>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function parseDiagramSteps(line: string): string[] {
-  const parts = line.split(/->|→/).map((s) => s.trim());
-  return parts.map((p) => p.replace(/^\[|\]$/g, "").trim()).filter(Boolean);
-}
-
-function renderDiagram(lines: string[], key: number) {
-  const allPaths = lines.map(parseDiagramSteps);
-  const maxSteps = Math.max(...allPaths.map((p) => p.length));
-
-  return (
-    <div key={key} className="my-4 rounded-xl border border-white/10 bg-dark-700/50 p-5">
-      <div className="mb-4 text-xs font-medium text-white/60">Architecture Diagram</div>
-      <div className="flex flex-col items-center gap-3">
-        {allPaths.map((steps, pi) => (
-          <div key={pi} className="flex items-center gap-0 flex-wrap justify-center">
-            {steps.map((step, si) => (
-              <React.Fragment key={si}>
-                {si > 0 && (
-                  <div className="mx-1.5 flex items-center">
-                    <div className="h-0.5 w-5 bg-purple-accent/60" />
-                    <svg className="h-3 w-3 text-purple-accent/60 shrink-0" viewBox="0 0 12 12" fill="currentColor">
-                      <path d="M2 1l8 5-8 5V1z" />
-                    </svg>
-                  </div>
-                )}
-                <div className="rounded-lg border border-purple-accent/30 bg-purple-accent/10 px-3 py-1.5 text-xs font-medium text-purple-light whitespace-nowrap">
-                  {step}
-                </div>
-              </React.Fragment>
-            ))}
           </div>
         ))}
       </div>

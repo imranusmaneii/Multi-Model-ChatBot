@@ -45,8 +45,8 @@ export async function ingestPDF(): Promise<{ chunks: number; pages: number }> {
   }
 
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 200,
+    chunkSize: 1500,
+    chunkOverlap: 300,
     separators: ["\n\n", "\n", ". ", " ", ""],
   });
 
@@ -90,7 +90,7 @@ export function isVectorStoreReady(): boolean {
 
 export async function queryPDF(
   question: string,
-  topK: number = 5
+  topK: number = 8
 ): Promise<{ answer: string; sources: Array<{ content: string; page: number; score: number }> }> {
   if (!vectorStore) {
     throw new Error("Knowledge base not initialized. Click 'Load Paper' first.");
@@ -110,20 +110,18 @@ export async function queryPDF(
   const systemPrompt = `You are a helpful AI assistant that answers questions based ONLY on the provided context from the research paper "Attention Is All You Need".
 
 IMPORTANT RULES:
-1. Answer ONLY based on the provided context. Do not use any outside knowledge.
-2. If the answer cannot be found in the context, respond EXACTLY: "I could not find this information in the provided paper."
-3. Be precise and accurate. Quote the paper when possible.
-4. Provide clear, well-structured answers using markdown formatting.
-5. Reference specific sources when possible.
-6. When presenting comparisons, metrics, or structured data, ALWAYS use a markdown table with | pipe separators like this exactly:
+1. Answer based on the provided context first. Only say "I could not find this information in the provided paper" if you have thoroughly checked all context and the information is genuinely absent.
+2. Be precise and accurate. Quote the paper when possible.
+3. Provide clear, well-structured answers using markdown formatting with headings, bullet points, and numbered lists as appropriate.
+4. Reference specific sources when possible.
+5. When asked about architecture or diagrams, describe the architecture in detail AND include this exact marker on its own line: [DIAGRAM:transformer]
+6. When asked about the optimizer or learning rate formula, include the full mathematical formula with all variables explained.
+7. When presenting comparisons, metrics, or structured data, ALWAYS use a markdown table with | pipe separators like this exactly:
 | Model | BLEU Score | Training Cost |
 |-------|-----------|--------------|
 | Transformer | 28.4 | Low |
 | RNN | 24.6 | High |
 Do NOT use tabs to separate columns - always use the | pipe format above.
-7. When asked about architecture, diagrams, or how components connect, ALWAYS include a visual flow diagram using this exact format on its own lines:
-[Input] -> [Encoder] -> [Decoder] -> [Output]
-Use -> arrows between [bracketed components] to show the flow. Put each flow step on its own line. You can show parallel paths on separate lines.
 8. When presenting numerical results or comparisons, also include a simple list format like "Model A: value" on separate lines so charts can be generated.`;
 
   const groqKey = process.env.GROQ_API_KEY;

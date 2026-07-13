@@ -273,7 +273,7 @@ export default function ChatInterface() {
             className="rounded-xl bg-purple-accent px-5 py-3 text-sm font-medium text-white transition-all hover:bg-purple-light disabled:opacity-30"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 12h16.5m-16.5 0l4.5-4.5m-4.5 4.5l4.5 4.5" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </button>
         </form>
