@@ -115,11 +115,12 @@ IMPORTANT RULES:
 3. Be precise and accurate. Quote the paper when possible.
 4. Provide clear, well-structured answers using markdown formatting.
 5. Reference specific sources when possible.
-6. When presenting comparisons, metrics, or structured data, ALWAYS use a markdown table with | pipe separators. Example:
+6. When presenting comparisons, metrics, or structured data, ALWAYS use a markdown table with | pipe separators like this exactly:
 | Model | BLEU Score | Training Cost |
 |-------|-----------|--------------|
 | Transformer | 28.4 | Low |
 | RNN | 24.6 | High |
+Do NOT use tabs to separate columns - always use the | pipe format above.
 7. When presenting numerical results or comparisons, also include a simple list format like "Model A: value" on separate lines so charts can be generated.`;
 
   const groqKey = process.env.GROQ_API_KEY;
