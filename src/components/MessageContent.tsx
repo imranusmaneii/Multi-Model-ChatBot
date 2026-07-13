@@ -2,6 +2,7 @@
 
 import React from "react";
 import TransformerDiagram from "./TransformerDiagram";
+import AttentionVisualization from "./AttentionVisualization";
 
 function isPipeTable(line: string): boolean {
   return line.startsWith("|") && line.includes("|", 1);
@@ -40,6 +41,27 @@ function parseContent(content: string): React.ReactNode[] {
     if (/^\[DIAGRAM:\w+\]$/.test(trimmed)) {
       elements.push(<TransformerDiagram key={key++} />);
       i++;
+      continue;
+    }
+
+    // Visualization marker [VISUALIZATION:attention]
+    if (/^\[VISUALIZATION:\w+\]$/.test(trimmed)) {
+      elements.push(<AttentionVisualization key={key++} />);
+      i++;
+      continue;
+    }
+
+    // Code block (triple backticks) - formulas, code
+    if (trimmed.startsWith("```")) {
+      const lang = trimmed.slice(3).trim();
+      const codeLines: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith("```")) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      if (i < lines.length) i++; // skip closing ```
+      elements.push(renderCodeBlock(codeLines.join("\n"), lang, key++));
       continue;
     }
 
@@ -251,14 +273,31 @@ function checkAndPushChart(
   }
 }
 
+function renderCodeBlock(code: string, lang: string, key: number) {
+  const isFormula = !lang || lang === "math" || lang === "formula" || /[=+\-·√²³]/.test(code);
+  return (
+    <div key={key} className="my-3 rounded-xl border border-white/10 bg-dark-700/60 overflow-hidden">
+      {isFormula && (
+        <div className="flex items-center gap-2 border-b border-white/5 px-4 py-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-purple-accent" />
+          <span className="text-[10px] font-medium text-white/40 uppercase tracking-wider">Formula</span>
+        </div>
+      )}
+      <pre className={`overflow-x-auto px-4 py-3 text-sm leading-relaxed ${isFormula ? "text-purple-light font-mono" : "text-white/80 font-mono"}`}>
+        <code>{code.trim()}</code>
+      </pre>
+    </div>
+  );
+}
+
 function renderTable(headers: string[], rows: string[][], key: number) {
   return (
-    <div key={key} className="my-3 overflow-x-auto rounded-xl border border-white/10">
+    <div key={key} className="my-3 overflow-x-auto rounded-xl border border-white/10 bg-dark-700/30">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-white/10 bg-purple-accent/10">
+          <tr className="border-b border-purple-accent/20 bg-purple-accent/10">
             {headers.map((h, i) => (
-              <th key={i} className="px-4 py-2.5 text-left text-xs font-semibold text-purple-light">
+              <th key={i} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-purple-light border-r border-white/5 last:border-r-0">
                 {h}
               </th>
             ))}
@@ -266,9 +305,9 @@ function renderTable(headers: string[], rows: string[][], key: number) {
         </thead>
         <tbody>
           {rows.map((row, ri) => (
-            <tr key={ri} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
+            <tr key={ri} className={`border-b border-white/5 last:border-0 transition-colors hover:bg-purple-accent/5 ${ri % 2 === 0 ? "bg-white/[0.01]" : ""}`}>
               {row.map((cell, ci) => (
-                <td key={ci} className="px-4 py-2 text-xs text-white/80">
+                <td key={ci} className="px-4 py-2.5 text-xs text-white/80 border-r border-white/[0.03] last:border-r-0">
                   {renderInline(cell)}
                 </td>
               ))}

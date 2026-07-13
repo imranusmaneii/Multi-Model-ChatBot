@@ -102,7 +102,7 @@ export default function ChatInterface() {
     <div className="flex h-[700px] flex-col rounded-2xl border border-white/10 bg-dark-800/50 backdrop-blur-sm">
       <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="h-3 w-3 rounded-full bg-purple-accent animate-pulse" />
+          <BotAvatar size={26} />
           <span className="text-sm font-medium text-white/80">Research Assistant</span>
         </div>
         {!isIngested && (
@@ -272,7 +272,7 @@ export default function ChatInterface() {
             disabled={!input.trim() || isLoading || !isIngested}
             className="rounded-xl bg-purple-accent px-5 py-3 text-sm font-medium text-white transition-all hover:bg-purple-light disabled:opacity-30"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ transform: "rotate(90deg)" }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </button>

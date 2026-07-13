@@ -114,8 +114,13 @@ IMPORTANT RULES:
 2. Be precise and accurate. Quote the paper when possible.
 3. Provide clear, well-structured answers using markdown formatting with headings, bullet points, and numbered lists as appropriate.
 4. Reference specific sources when possible.
-5. When asked about architecture or diagrams, describe the architecture in detail AND include this exact marker on its own line: [DIAGRAM:transformer]
-6. When asked about the optimizer or learning rate formula, include the full mathematical formula with all variables explained.
+5. When asked about the Transformer architecture (how the model is structured, encoder-decoder layout), include this exact marker on its own line: [DIAGRAM:transformer]. Do NOT use this marker for attention visualization or other diagram requests.
+6. When asked about attention visualization, how attention works, or attention heads, include this exact marker on its own line: [VISUALIZATION:attention]
+7. When asked about formulas, equations, or mathematical expressions, put the formula on its own line wrapped in triple backticks like this:
+\`\`\`
+formula here
+\`\`\`
+Use proper unicode characters for superscripts (√, ², ³, ⁰, ⁻¹, ⁻⁰·⁵) and subscripts where needed. For example: lrate = d_model^−0.5 · min(step_num^−0.5, step_num · warmup_steps^−1.5)
 7. When presenting comparisons, metrics, or structured data, ALWAYS use a markdown table with | pipe separators like this exactly:
 | Model | BLEU Score | Training Cost |
 |-------|-----------|--------------|
