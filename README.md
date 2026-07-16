@@ -55,7 +55,7 @@ python main.py
 
 A deployed web interface for chatting with the paper.
 
-**Live:** https://task5-usmani11.vercel.app
+**Live:** https://multi-model1.vercel.app/
 
 **Tech Stack:**
 - Next.js 14 (App Router) + TypeScript
