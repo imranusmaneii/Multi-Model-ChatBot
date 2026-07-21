@@ -14,7 +14,7 @@ This project builds an AI system that can:
 4. **Retrieve relevant content** — given a user query, finds the most relevant chunks from text, tables, AND figure descriptions
 5. **Generate grounded answers** — uses Groq's Llama 3.3 70B to answer questions strictly from retrieved context, with source citations
 
-## Demo Queries (Tested)
+### Demo Queries (Tested)
 
 | Query | Modality Targeted | Result |
 |-------|------------------|--------|
