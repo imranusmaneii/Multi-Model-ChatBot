@@ -1,4 +1,4 @@
-# Multimodal RAG System — "Attention Is All You Need"
+# Multimodal RAG System — "Attention Is All You Need
 
 A complete Retrieval-Augmented Generation (RAG) system that answers questions about the **"Attention Is All You Need"** research paper (Vaswani et al., 2017). Includes both a **Python multimodal pipeline** (extracts text, tables, figures, and diagrams) and a **deployed Next.js web chatbot**.
 
